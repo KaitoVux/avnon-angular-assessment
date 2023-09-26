@@ -1,0 +1,87 @@
+<section>
+  <button *ngIf="!questions.length" (click)="handleAddNewQuestion()">Add new question</button>
+  <ng-container *ngTemplateOutlet="fillAnswers"></ng-container>
+</section>
+
+<ng-template #fillAnswers>
+  <div class="answer-box" *ngIf="questions.length">
+    <form [formGroup]="answerForm">
+      <nz-row formArrayName="answers" [nzGutter]="[16, 16]">
+        <ng-container *ngFor="let control of answerFormArray.controls; let i = index">
+          <ng-container [formGroupName]="i">
+            <nz-col class="label" [nzSpan]="24">
+              <label>{{getAnswerTitle(i)}}</label>
+              <span *ngIf="getAnswerIsRequired(i)">*</span>
+            </nz-col>
+            <nz-col [nzSpan]="24" *ngIf="getAnswerType(i) === questionType.Text">
+              <textarea class="full-width" rows="4" formControlName="answer" nz-input></textarea>
+            </nz-col>
+            <nz-col [nzSpan]="24" *ngIf="getAnswerType(i) === questionType.MultipleChoice">
+              <div>
+                <nz-checkbox-group class="flex-col" formControlName="answer"></nz-checkbox-group>
+              </div>
+              <nz-row [nzGutter]="[16, 16]">
+                <nz-col [nzSpan]="24" *ngIf="getAllowSpecifyAnswer(i)">
+                  <label nz-checkbox formControlName="hasOther">Other</label>
+                </nz-col>
+                <nz-col [nzSpan]="24" *ngIf="getAnswerHasOther(i)">
+                  <input nz-input placeholder="Other option" formControlName="otherOption"/>
+                </nz-col>
+              </nz-row>
+            </nz-col>
+          </ng-container>
+        </ng-container>
+      </nz-row>
+    </form>
+    <nz-row [nzGutter]="[16, 16]" class="actions">
+      <nz-col [nzSpan]="24">
+        <button (click)="handleAddNewQuestion()">Add new question</button>
+      </nz-col>
+      <nz-col [nzSpan]="24">
+        <button (click)="submitAnswer()">Review my answer >>></button>
+      </nz-col>
+    </nz-row>
+  </div>
+</ng-template>
+
+<nz-modal
+  [(nzVisible)]="isVisible"
+  nzTitle="Add a new question"
+  (nzOnCancel)="handleCancel()"
+  (nzOnOk)="handleOk()">
+  <ng-container *nzModalContent>
+    <div>
+      <form [formGroup]="addQuestionForm">
+        <nz-row [nzGutter]="[16, 16]">
+          <nz-col [nzSpan]="24">
+            <nz-select required class="full-width" formControlName="type" (ngModelChange)="onTypeChanged($event)">
+              <nz-option [nzValue]="questionType.Text" nzLabel="Paragraph"></nz-option>
+              <nz-option [nzValue]="questionType.MultipleChoice" nzLabel="Check Box list"></nz-option>
+            </nz-select>
+          </nz-col>
+          <nz-col [nzSpan]="24">
+            <input required nz-input placeholder="Enter question" formControlName="title"/>
+          </nz-col>
+          <nz-col [nzSpan]="24" *ngIf="isMultipleChoice()">
+            <nz-row formArrayName="options" [nzGutter]="[16, 16]">
+              <ng-container *ngFor="let option of optionFormArray.controls; let i = index">
+                <nz-col [nzSpan]="24" [formGroupName]="i">
+                  <input nz-input placeholder="Enter option" formControlName="name"/>
+                </nz-col>
+              </ng-container>
+              <nz-col [nzSpan]="24">
+                <button (click)="addOption()">Add answer</button>
+              </nz-col>
+            </nz-row>
+          </nz-col>
+          <nz-col [nzSpan]="24">
+            <label nz-checkbox formControlName="allowSpecifyAnswer">Allow user to specify own answer</label>
+          </nz-col>
+          <nz-col [nzSpan]="24">
+            <label nz-checkbox formControlName="isRequired">This field is required</label>
+          </nz-col>
+        </nz-row>
+      </form>
+    </div>
+  </ng-container>
+</nz-modal>

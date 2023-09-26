@@ -1,0 +1,31 @@
+<section class="review-answer" *ngIf="questionWithAnswers.length">
+  <ng-container *ngFor="let questionWithAnswer of questionWithAnswers">
+    <div *ngIf="questionWithAnswer.type === questionType.Text">
+      <ng-container *ngTemplateOutlet="text; context: {$implicit: questionWithAnswer}"></ng-container>
+    </div>
+    <div *ngIf="questionWithAnswer.type === questionType.MultipleChoice">
+      <ng-container *ngTemplateOutlet="multipleChoice; context: {$implicit: questionWithAnswer}"></ng-container>
+    </div>
+    <nz-divider></nz-divider>
+  </ng-container>
+  <nz-space [nzSize]="32">
+    <button (click)="onBack()">Back to Forms Builder</button>
+  </nz-space>
+</section>
+
+<ng-template #text let-question>
+  <nz-row [nzGutter]="[8, 8]">
+    <nz-col [nzSpan]="24" class="label">{{question.title}}</nz-col>
+    <nz-col [nzSpan]="24" class="answer">{{question?.answer ?? ""}}</nz-col>
+  </nz-row>
+</ng-template>
+<ng-template #multipleChoice let-question>
+  <p class="label">{{question.title}}</p>
+  <nz-row [nzGutter]="[8, 8]" *ngIf="hasAnswer(question)">
+    <ng-container *ngFor="let answer of question.answer">
+      <nz-col [nzSpan]="24">
+        {{answer}}
+      </nz-col>
+    </ng-container>
+  </nz-row>
+</ng-template>

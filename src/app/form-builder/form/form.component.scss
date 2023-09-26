@@ -1,0 +1,26 @@
+.full-width {
+  width: 100%;
+}
+
+.answer-box {
+  margin-top: 50px;
+  padding: 30px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.label {
+  font-weight: bold;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 20px;
+}
+
